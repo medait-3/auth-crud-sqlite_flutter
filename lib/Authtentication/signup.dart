@@ -11,13 +11,45 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final username = TextEditingController();
-  final password = TextEditingController();
-  final confirmPassword = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
 
   bool isVisible = false;
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confpasswordController = TextEditingController();
+
+  DatabaseHelper dbHelper = DatabaseHelper();
+
+  void _register(BuildContext context) async {
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confpasswordController.text.trim();
+
+    bool userExists = await dbHelper.doesUserExist(username);
+
+    if (userExists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Username already existe'),
+        ),
+      );
+    } else {
+      final db = DatabaseHelper();
+      db
+          .signup(Users(usrName: username, usrPassword: password))
+          .whenComplete(() {
+        //After success user creation go to login screen
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()));
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration successful'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +84,7 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
                     child: TextFormField(
-                      controller: username,
+                      controller: _usernameController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "username is required";
@@ -76,7 +108,7 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
                     child: TextFormField(
-                      controller: password,
+                      controller: _passwordController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "password is required";
@@ -112,11 +144,12 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
                     child: TextFormField(
-                      controller: confirmPassword,
+                      controller: _confpasswordController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "password is required";
-                        } else if (password.text != confirmPassword.text) {
+                        } else if (_passwordController.text !=
+                            _confpasswordController.text) {
                           return "Passwords don't match";
                         }
                         return null;
@@ -153,19 +186,7 @@ class _SignUpState extends State<SignUp> {
                           if (formKey.currentState!.validate()) {
                             //Login method will be here
 
-                            final db = DatabaseHelper();
-                            db
-                                .signup(Users(
-                                    usrName: username.text,
-                                    usrPassword: password.text))
-                                .whenComplete(() {
-                              //After success user creation go to login screen
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginScreen()));
-                            });
+                            _register(context);
                           }
                         },
                         child: const Text(
