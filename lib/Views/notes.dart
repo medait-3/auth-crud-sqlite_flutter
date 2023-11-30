@@ -4,8 +4,11 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/create_note.dart';
 
+import '../_constant/alertdialog.dart';
+
 class Notes extends StatefulWidget {
-  const Notes({super.key});
+  const Notes({super.key, required this.databaseName});
+  final String databaseName;
 
   @override
   State<Notes> createState() => _NotesState();
@@ -23,22 +26,25 @@ class _NotesState extends State<Notes> {
   @override
   void initState() {
     handler = DatabaseHelper();
-    notes = handler.getNotes();
+    notes = handler.getNotes(databaseName: widget.databaseName);
 
-    handler.initDB().whenComplete(() {
+    handler.initDB(databaseName: widget.databaseName).whenComplete(() {
       notes = getAllNotes();
     });
     super.initState();
   }
 
   Future<List<NoteModel>> getAllNotes() {
-    return handler.getNotes();
+    return handler.getNotes(databaseName: widget.databaseName);
   }
 
   //Search method here
   //First we have to create a method in Database helper class
   Future<List<NoteModel>> searchNote() {
-    return handler.searchNotes(keyword.text);
+    return handler.searchNotes(
+      databaseName: widget.databaseName,
+      keyword: keyword.text,
+    );
   }
 
   //Refresh method
@@ -59,9 +65,13 @@ class _NotesState extends State<Notes> {
             //We need call refresh method after a new note is created
             //Now it works properly
             //We will do delete now
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const CreateNote()))
-                .then((value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    CreateNote(databaseName: widget.databaseName),
+              ),
+            ).then((value) {
               if (value) {
                 //This will be called
                 _refresh();
@@ -122,14 +132,32 @@ class _NotesState extends State<Notes> {
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                //We call the delete method in database helper
-                                db
-                                    .deleteNote(items[index].noteId!)
-                                    .whenComplete(() {
-                                  //After success delete , refresh notes
-                                  //Done, next step is update notes
-                                  _refresh();
-                                });
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CustomAlertDialog(
+                                      title: 'Delete',
+                                      content:
+                                          'Are you sure you want to Deleted?',
+                                      yesButtonText: 'Delete',
+                                      noButtonText: 'Cancel',
+                                      onYes: () {
+                                        db
+                                            .deleteNote(
+                                          databaseName: widget.databaseName,
+                                          id: items[index].noteId!,
+                                        )
+                                            .whenComplete(() {
+                                          _refresh();
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                      onNo: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  },
+                                );
                               },
                             ),
                             onTap: () {
@@ -150,9 +178,12 @@ class _NotesState extends State<Notes> {
                                                 //Now update method
                                                 db
                                                     .updateNote(
-                                                        title.text,
-                                                        content.text,
-                                                        items[index].noteId)
+                                                  databaseName:
+                                                      widget.databaseName,
+                                                  title: title.text,
+                                                  content: content.text,
+                                                  noteId: items[index].noteId,
+                                                )
                                                     .whenComplete(() {
                                                   //After update, note will refresh
                                                   _refresh();

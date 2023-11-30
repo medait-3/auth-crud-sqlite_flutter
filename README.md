@@ -1,16 +1,56 @@
-# quiz
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CustomAlertDialog(
+                                      title: 'Update',
+                                      content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            //We need two textfield
+                                            TextFormField(
+                                              controller: title,
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Title is required";
+                                                }
+                                                return null;
+                                              },
+                                              decoration: const InputDecoration(
+                                                label: Text("Title"),
+                                              ),
+                                            ),
+                                            TextFormField(
+                                              controller: content,
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Content is required";
+                                                }
+                                                return null;
+                                              },
+                                              decoration: const InputDecoration(
+                                                label: Text("Content"),
+                                              ),
+                                            ),
+                                          ]),
+                                      yesButtonText: 'Update',
+                                      noButtonText: 'Cancel',
+                                      onYes: () {
+                                        db
+                                                    .updateNote(
+                                                  databaseName:
+                                                      widget.databaseName,
+                                                  title: title.text,
+                                                  content: content.text,
+                                                  noteId: items[index].noteId,
+                                                )
+                                                    .whenComplete(() {
+                                                  //After update, note will refresh
+                                                  _refresh();
+                                                  Navigator.pop(context);},
+                                      onNo: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  },
+                                );
+                              },

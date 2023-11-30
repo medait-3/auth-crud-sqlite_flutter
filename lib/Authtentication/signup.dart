@@ -3,6 +3,9 @@ import 'package:quiz/Authtentication/login.dart';
 import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 
+import '../_constant/button.dart';
+import '../_constant/snackbar.dart';
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -29,24 +32,25 @@ class _SignUpState extends State<SignUp> {
     bool userExists = await dbHelper.doesUserExist(username);
 
     if (userExists) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Username already existe'),
-        ),
+      CustomSnackBar.show(
+        context,
+        message: 'Username already existe',
+        backgroundColor: Colors.black,
+        duration: Duration(seconds: 3),
       );
     } else {
       final db = DatabaseHelper();
       db
           .signup(Users(usrName: username, usrPassword: password))
           .whenComplete(() {
-        //After success user creation go to login screen
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const LoginScreen()));
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Registration successful'),
-        ),
+      CustomSnackBar.show(
+        context,
+        message: 'Registration successful',
+        backgroundColor: Colors.black,
+        duration: Duration(seconds: 3),
       );
     }
   }
@@ -175,24 +179,17 @@ class _SignUpState extends State<SignUp> {
 
                   const SizedBox(height: 10),
                   //Login button
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width * .9,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple),
-                    child: TextButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            //Login method will be here
+                  CustomButton(
+                    text: 'SIGN UP',
+                    textColor: Colors.white,
+                    buttonColor: Colors.green,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        //Login method will be here
 
-                            _register(context);
-                          }
-                        },
-                        child: const Text(
-                          "SIGN UP",
-                          style: TextStyle(color: Colors.white),
-                        )),
+                        _register(context);
+                      }
+                    },
                   ),
 
                   //Sign up button

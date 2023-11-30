@@ -4,6 +4,9 @@ import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/notes.dart';
 
+import '../_constant/button.dart';
+import '../_constant/textfield.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -12,8 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //We need two text editing controller
-
   //TextEditing controller to control the text when we enter into it
   final username = TextEditingController();
   final password = TextEditingController();
@@ -34,7 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
       //If login is correct, then goto notes
       if (!mounted) return;
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Notes()));
+        context,
+        MaterialPageRoute(
+          builder: (context) => Notes(
+            databaseName: '${username.text}_notesss.db',
+          ),
+        ),
+      );
     } else {
       //If not, true the bool value to show error message
       setState(() {
@@ -63,8 +70,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Image.asset(
                   //   "lib/assets/login.png",
                   //   width: 210,
-                  // ),
+                  // ), const SizedBox(height: 50),
+                  MyTextField(
+                    controller: username,
+                    prefixIconData: Icons.person,
+                    prefixIconColor: Colors.blue,
+                    hintText: 'Username',
+                    suffixIcon: true,
+                  ),
                   const SizedBox(height: 15),
+                  MyTextField(
+                    suffixIcon: false,
+                    controller: password,
+                    prefixIconData: Icons.lock,
+                    prefixIconColor: Colors.blue,
+                    hintText: 'Password',
+                  ),
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
@@ -125,26 +146,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 10),
                   //Login button
-                  Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width * .9,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple),
-                    child: TextButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            //Login method will be here
-                            login();
 
-                            //Now we have a response from our sqlite method
-                            //We are going to create a user
-                          }
-                        },
-                        child: const Text(
-                          "LOGIN",
-                          style: TextStyle(color: Colors.white),
-                        )),
+                  CustomButton(
+                    text: 'LOGIN',
+                    textColor: Colors.white,
+                    buttonColor: Colors.green,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        login();
+                      }
+                    },
                   ),
 
                   //Sign up button
@@ -167,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // We will disable this message in default, when user and pass is incorrect we will trigger this message to user
                   isLoginTrue
                       ? const Text(
-                          "Username or passowrd is incorrect",
+                          "Username or password is incorrect",
                           style: TextStyle(color: Colors.red),
                         )
                       : const SizedBox(),

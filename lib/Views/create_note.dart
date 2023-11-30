@@ -3,7 +3,8 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 
 class CreateNote extends StatefulWidget {
-  const CreateNote({super.key});
+  const CreateNote({super.key, required this.databaseName});
+  final String databaseName;
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -27,10 +28,14 @@ class _CreateNoteState extends State<CreateNote> {
                 //We should not allow empty data to the database
                 if (formKey.currentState!.validate()) {
                   db
-                      .createNote(NoteModel(
-                          noteTitle: title.text,
-                          noteContent: content.text,
-                          createdAt: DateTime.now().toIso8601String()))
+                      .createNote(
+                    databaseName: widget.databaseName,
+                    note: NoteModel(
+                      noteTitle: title.text,
+                      noteContent: content.text,
+                      createdAt: DateTime.now().toIso8601String(),
+                    ),
+                  )
                       .whenComplete(() {
                     //When this value is true
                     Navigator.of(context).pop(true);
