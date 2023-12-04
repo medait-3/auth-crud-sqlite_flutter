@@ -3,8 +3,7 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 
 class CreateNote extends StatefulWidget {
-  const CreateNote({super.key, required this.databaseName});
-  final String databaseName;
+  const CreateNote({super.key});
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -29,8 +28,7 @@ class _CreateNoteState extends State<CreateNote> {
                 if (formKey.currentState!.validate()) {
                   db
                       .createNote(
-                    databaseName: widget.databaseName,
-                    note: NoteModel(
+                    NoteModel(
                       noteTitle: title.text,
                       noteContent: content.text,
                       createdAt: DateTime.now().toIso8601String(),

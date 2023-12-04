@@ -8,8 +8,9 @@ import '../Authtentication/login.dart';
 import '../_constant/alertdialog.dart';
 
 class Notes extends StatefulWidget {
-  const Notes({super.key, required this.databaseName});
-  final String databaseName;
+  const Notes({
+    super.key,
+  });
 
   @override
   State<Notes> createState() => _NotesState();
@@ -27,25 +28,22 @@ class _NotesState extends State<Notes> {
   @override
   void initState() {
     handler = DatabaseHelper();
-    notes = handler.getNotes(databaseName: widget.databaseName);
+    notes = handler.getNotes();
 
-    handler.initDB(databaseName: widget.databaseName).whenComplete(() {
+    handler.initDB().whenComplete(() {
       notes = getAllNotes();
     });
     super.initState();
   }
 
   Future<List<NoteModel>> getAllNotes() {
-    return handler.getNotes(databaseName: widget.databaseName);
+    return handler.getNotes();
   }
 
   //Search method here
   //First we have to create a method in Database helper class
   Future<List<NoteModel>> searchNote() {
-    return handler.searchNotes(
-      databaseName: widget.databaseName,
-      keyword: keyword.text,
-    );
+    return handler.searchNotes(keyword.text);
   }
 
   //Refresh method
@@ -77,13 +75,10 @@ class _NotesState extends State<Notes> {
             //We need call refresh method after a new note is created
             //Now it works properly
             //We will do delete now
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CreateNote(databaseName: widget.databaseName),
-              ),
-            ).then((value) {
+
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const CreateNote()))
+                .then((value) {
               if (value) {
                 //This will be called
                 _refresh();
@@ -156,8 +151,7 @@ class _NotesState extends State<Notes> {
                                       onYes: () {
                                         db
                                             .deleteNote(
-                                          databaseName: widget.databaseName,
-                                          id: items[index].noteId!,
+                                          items[index].noteId!,
                                         )
                                             .whenComplete(() {
                                           _refresh();
@@ -190,11 +184,9 @@ class _NotesState extends State<Notes> {
                                                 //Now update method
                                                 db
                                                     .updateNote(
-                                                  databaseName:
-                                                      widget.databaseName,
-                                                  title: title.text,
-                                                  content: content.text,
-                                                  noteId: items[index].noteId,
+                                                  title.text,
+                                                  content.text,
+                                                  items[index].noteId,
                                                 )
                                                     .whenComplete(() {
                                                   //After update, note will refresh

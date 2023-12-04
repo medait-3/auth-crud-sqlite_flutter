@@ -36,13 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       //If login is correct, then goto notes
       if (!mounted) return;
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Notes(
-            databaseName: '${username.text}_notes.db',
-          ),
-        ),
-      );
+          context, MaterialPageRoute(builder: (context) => const Notes()));
     } else {
       //If not, true the bool value to show error message
       setState(() {
