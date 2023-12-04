@@ -4,6 +4,7 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/create_note.dart';
 
+import '../Authtentication/login.dart';
 import '../_constant/alertdialog.dart';
 
 class Notes extends StatefulWidget {
@@ -58,7 +59,18 @@ class _NotesState extends State<Notes> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Notes"),
+          automaticallyImplyLeading: false,
+          title: const Text("My Notes"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()));
+                },
+                icon: Icon(Icons.logout))
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

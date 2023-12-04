@@ -4,7 +4,9 @@ import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 
 import '../_constant/button.dart';
+import '../_constant/color.dart';
 import '../_constant/snackbar.dart';
+import '../_constant/textfield.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -35,7 +37,7 @@ class _SignUpState extends State<SignUp> {
       CustomSnackBar.show(
         context,
         message: 'Username already existe',
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.red,
         duration: Duration(seconds: 3),
       );
     } else {
@@ -49,7 +51,7 @@ class _SignUpState extends State<SignUp> {
       CustomSnackBar.show(
         context,
         message: 'Registration successful',
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.green,
         duration: Duration(seconds: 3),
       );
     }
@@ -70,126 +72,87 @@ class _SignUpState extends State<SignUp> {
                 children: [
                   //We will copy the previous textfield we designed to avoid time consuming
 
-                  const ListTile(
-                    title: Text(
-                      "Register ",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  const Text('Let’s Sign you in',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 55),
 
                   //As we assigned our controller to the textformfields
 
-                  Container(
-                    margin: EdgeInsets.all(8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "username is required";
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.person),
-                        border: InputBorder.none,
-                        hintText: "Username",
-                      ),
-                    ),
+                  AuthField(
+                    // title: 'Username',
+                    prefixIconData: Icons.person,
+                    hintText: 'Username',
+                    controller: _usernameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Username is required';
+                      }
+                      if (value.length > 100) {
+                        return "Username can't to be larger than 100 letter";
+                      }
+                      if (value.length < 4) {
+                        return "Username can't to be less than 4 letter";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 15),
+                  // Password Field.
+                  AuthField(
+                    // title: 'Password',
+                    hintText: 'Password',
+                    prefixIconData: Icons.lock,
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      } else if (value.length < 5) {
+                        return 'Password should be at least 5 characters long';
+                      }
+                      return null;
+                    },
+                    isPassword: true,
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.done,
+                  ),
+                  const SizedBox(height: 15),
+                  //password confirmed
+                  AuthField(
+                    // title: 'confirmation Password',
+                    hintText: 'Confim Password',
+                    prefixIconData: Icons.lock,
+                    controller: _confpasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      } else if (_passwordController.text !=
+                          _confpasswordController.text) {
+                        return "Passwords don't match";
+                      }
+                      return null;
+                    },
+                    isPassword: true,
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.done,
                   ),
 
-                  //Password field
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "password is required";
-                        }
-                        return null;
-                      },
-                      obscureText: !isVisible,
-                      decoration: InputDecoration(
-                          icon: const Icon(Icons.lock),
-                          border: InputBorder.none,
-                          hintText: "Password",
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                //In here we will create a click to show and hide the password a toggle button
-                                setState(() {
-                                  //toggle button
-                                  isVisible = !isVisible;
-                                });
-                              },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
-                    ),
-                  ),
-
-                  //Confirm Password field
-                  // Now we check whether password matches or not
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
-                    child: TextFormField(
-                      controller: _confpasswordController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "password is required";
-                        } else if (_passwordController.text !=
-                            _confpasswordController.text) {
-                          return "Passwords don't match";
-                        }
-                        return null;
-                      },
-                      obscureText: !isVisible,
-                      decoration: InputDecoration(
-                          icon: const Icon(Icons.lock),
-                          border: InputBorder.none,
-                          hintText: "Password",
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                //In here we will create a click to show and hide the password a toggle button
-                                setState(() {
-                                  //toggle button
-                                  isVisible = !isVisible;
-                                });
-                              },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
                   //Login button
-                  CustomButton(
-                    text: 'SIGN UP',
-                    textColor: Colors.white,
-                    buttonColor: Colors.green,
-                    onPressed: () {
+                  PrimaryButton(
+                    onTap: () {
                       if (formKey.currentState!.validate()) {
-                        //Login method will be here
-
                         _register(context);
+                        _usernameController.clear();
+                        _confpasswordController.clear();
+                        _passwordController.clear();
                       }
                     },
+                    text: 'SIGN UP',
                   ),
 
                   //Sign up button
@@ -205,7 +168,10 @@ class _SignUpState extends State<SignUp> {
                                 MaterialPageRoute(
                                     builder: (context) => const LoginScreen()));
                           },
-                          child: const Text("Login"))
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(color: AppColors.kPrimary),
+                          ))
                     ],
                   )
                 ],

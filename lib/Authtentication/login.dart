@@ -5,6 +5,7 @@ import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/notes.dart';
 
 import '../_constant/button.dart';
+import '../_constant/color.dart';
 import '../_constant/textfield.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => Notes(
-            databaseName: '${username.text}_notesss.db',
+            databaseName: '${username.text}_notes.db',
           ),
         ),
       );
@@ -64,100 +65,70 @@ class _LoginScreenState extends State<LoginScreen> {
               key: formKey,
               child: Column(
                 children: [
-                  //Username field
+                  const Text('Let’s Login',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 55),
 
-                  //Before we show the image, after we copied the image we need to define the location in pubspec.yaml
+                  //Username field
+                  //  Before we show the image, after we copied the image we need to define the location in pubspec.yaml
                   // Image.asset(
                   //   "lib/assets/login.png",
                   //   width: 210,
                   // ), const SizedBox(height: 50),
-                  MyTextField(
-                    controller: username,
+                  AuthField(
+                    // title: 'Username',
                     prefixIconData: Icons.person,
-                    prefixIconColor: Colors.blue,
                     hintText: 'Username',
-                    suffixIcon: true,
+                    controller: username,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Username is required';
+                      }
+                      if (value.length > 100) {
+                        return "Password can't to be larger than 100 letter";
+                      }
+                      if (value.length < 4) {
+                        return "Username can't to be less than 4 letter";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 15),
-                  MyTextField(
-                    suffixIcon: false,
-                    controller: password,
+                  // Password Field.
+                  AuthField(
+                    // title: 'Password',
+                    hintText: 'password',
                     prefixIconData: Icons.lock,
-                    prefixIconColor: Colors.blue,
-                    hintText: 'Password',
+                    controller: password,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      } else if (value.length < 5) {
+                        return 'Password should be at least 5 characters long';
+                      }
+                      return null;
+                    },
+                    isPassword: true,
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.done,
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
-                    child: TextFormField(
-                      controller: username,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "username is required";
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.person),
-                        border: InputBorder.none,
-                        hintText: "Username",
-                      ),
-                    ),
-                  ),
-
-                  //Password field
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
-                    child: TextFormField(
-                      controller: password,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "password is required";
-                        }
-                        return null;
-                      },
-                      obscureText: !isVisible,
-                      decoration: InputDecoration(
-                          icon: const Icon(Icons.lock),
-                          border: InputBorder.none,
-                          hintText: "Password",
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                //In here we will create a click to show and hide the password a toggle button
-                                setState(() {
-                                  //toggle button
-                                  isVisible = !isVisible;
-                                });
-                              },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-                  //Login button
-
-                  CustomButton(
-                    text: 'LOGIN',
-                    textColor: Colors.white,
-                    buttonColor: Colors.green,
-                    onPressed: () {
+                  // button login
+                  const SizedBox(height: 15),
+                  PrimaryButton(
+                    onTap: () {
                       if (formKey.currentState!.validate()) {
                         login();
+                        password.clear();
+                        username.clear();
                       }
                     },
+                    text: 'LOGIN',
                   ),
-
                   //Sign up button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +142,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => const SignUp()));
                           },
-                          child: const Text("SIGN UP"))
+                          child: const Text(
+                            "SIGN UP",
+                            style: TextStyle(color: AppColors.kPrimary),
+                          ))
                     ],
                   ),
 
