@@ -6,7 +6,7 @@ import 'package:quiz/JsonModels/users.dart';
 class DatabaseHelper {
   final databaseName = "notessS.db";
   String noteTable =
-      "CREATE TABLE IF NOT EXISTS  notes (noteId INTEGER PRIMARY KEY AUTOINCREMENT, noteTitle TEXT NOT NULL, noteContent TEXT NOT NULL, createdAt TEXT DEFAULT CURRENT_TIMESTAMP)";
+      "CREATE TABLE IF NOT EXISTS  notes (noteId INTEGER PRIMARY KEY AUTOINCREMENT, noteTitle TEXT NOT NULL, noteContent TEXT NOT NULL, createdAt TEXT DEFAULT CURRENT_TIMESTAMP,user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(usrId))";
 
   String users =
       "create table IF NOT EXISTS  users (usrId INTEGER PRIMARY KEY AUTOINCREMENT, usrName TEXT UNIQUE, usrPassword TEXT)";
@@ -53,6 +53,12 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
+//log out
+  Future<void> closeDatabase() async {
+    final Database db = await initDB();
+    db.close();
+  }
+
   //Search Method
   Future<List<NoteModel>> searchNotes(String keyword) async {
     final Database db = await initDB();
@@ -72,7 +78,9 @@ class DatabaseHelper {
   //Get notes
   Future<List<NoteModel>> getNotes() async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.query('notes');
+    List<Map<String, Object?>> result = await db.query(
+      'notes',
+    );
     return result.map((e) => NoteModel.fromMap(e)).toList();
   }
 

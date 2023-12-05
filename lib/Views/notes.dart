@@ -61,11 +61,13 @@ class _NotesState extends State<Notes> {
           title: const Text("My Notes"),
           actions: [
             IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
+                onPressed: () async {
+                  await handler.closeDatabase();
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
                 },
                 icon: Icon(Icons.logout))
           ],
@@ -175,67 +177,75 @@ class _NotesState extends State<Notes> {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return AlertDialog(
-                                      actions: [
-                                        Row(
-                                          children: [
-                                            TextButton(
-                                              onPressed: () {
-                                                //Now update method
-                                                db
-                                                    .updateNote(
-                                                  title.text,
-                                                  content.text,
-                                                  items[index].noteId,
-                                                )
-                                                    .whenComplete(() {
-                                                  //After update, note will refresh
-                                                  _refresh();
+                                    return StatefulBuilder(
+                                        builder: (stfContext, stfSetState) {
+                                      return AlertDialog(
+                                        actions: [
+                                          Row(
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  //Now update method
+
+                                                  db
+                                                      .updateNote(
+                                                    title.text,
+                                                    content.text,
+                                                    items[index].noteId,
+                                                  )
+                                                      .whenComplete(() {
+                                                    //After update, note will refresh
+                                                    _refresh();
+                                                    Navigator.pop(context);
+                                                  });
+                                                },
+                                                child: const Text("Update"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
                                                   Navigator.pop(context);
-                                                });
-                                              },
-                                              child: const Text("Update"),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Cancel"),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                      title: const Text("Update note"),
-                                      content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            //We need two textfield
-                                            TextFormField(
-                                              controller: title,
-                                              validator: (value) {
-                                                if (value!.isEmpty) {
-                                                  return "Title is required";
-                                                }
-                                                return null;
-                                              },
-                                              decoration: const InputDecoration(
-                                                label: Text("Title"),
+                                                },
+                                                child: const Text("Cancel"),
                                               ),
-                                            ),
-                                            TextFormField(
-                                              controller: content,
-                                              validator: (value) {
-                                                if (value!.isEmpty) {
-                                                  return "Content is required";
-                                                }
-                                                return null;
-                                              },
-                                              decoration: const InputDecoration(
-                                                label: Text("Content"),
+                                            ],
+                                          ),
+                                        ],
+                                        title: const Text("Update note"),
+                                        content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              //We need two textfield
+                                              TextFormField(
+                                                controller: title,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Title is required";
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration:
+                                                    const InputDecoration(
+                                                  label: Text("Title"),
+                                                ),
                                               ),
-                                            ),
-                                          ]),
-                                    );
+                                              TextFormField(
+                                                controller: content,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Content is required";
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration:
+                                                    const InputDecoration(
+                                                  label: Text("Content"),
+                                                ),
+                                              ),
+                                            ]),
+                                      );
+                                    });
                                   });
                             },
                           );

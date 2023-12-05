@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
+import 'package:quiz/Views/notes.dart';
+
+import '../_constant/button.dart';
 
 class CreateNote extends StatefulWidget {
   const CreateNote({super.key});
@@ -17,66 +20,76 @@ class _CreateNoteState extends State<CreateNote> {
   final db = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create note"),
-        actions: [
-          IconButton(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
-                //Add Note button
-                //We should not allow empty data to the database
-                if (formKey.currentState!.validate()) {
-                  db
-                      .createNote(
-                    NoteModel(
-                      noteTitle: title.text,
-                      noteContent: content.text,
-                      createdAt: DateTime.now().toIso8601String(),
-                    ),
-                  )
-                      .whenComplete(() {
-                    //When this value is true
-                    Navigator.of(context).pop(true);
-                  });
+                if (formKey.currentState != null) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Notes()));
                 }
-              },
-              icon: Icon(Icons.check))
-        ],
+              }),
+          title: const Text("Create note"),
+        ),
+        body: Form(
+            //I forgot to specify key
+            key: formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: title,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Title is required";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      label: Text("Title"),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: content,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "password is required";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      label: Text("password"),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  PrimaryButton(
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        db.createNote(
+                          NoteModel(
+                            noteTitle: title.text,
+                            noteContent: content.text,
+                            createdAt: DateTime.now().toIso8601String(),
+                          ),
+                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Notes()));
+                      }
+                    },
+                    text: 'create',
+                  ),
+                ],
+              ),
+            )),
       ),
-      body: Form(
-          //I forgot to specify key
-          key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: title,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Title is required";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    label: Text("Title"),
-                  ),
-                ),
-                TextFormField(
-                  controller: content,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Content is required";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    label: Text("Content"),
-                  ),
-                ),
-              ],
-            ),
-          )),
     );
   }
 }
