@@ -59,122 +59,126 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //SingleChildScrollView to have an scrol in the screen
-      body: Center(
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //We will copy the previous textfield we designed to avoid time consuming
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        //SingleChildScrollView to have an scrol in the screen
+        body: Center(
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //We will copy the previous textfield we designed to avoid time consuming
 
-                  const Text('Let’s Sign you in',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 55),
+                    const Text('Let’s Sign you in',
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 55),
 
-                  //As we assigned our controller to the textformfields
+                    //As we assigned our controller to the textformfields
 
-                  AuthField(
-                    // title: 'Username',
-                    prefixIconData: Icons.person,
-                    hintText: 'Username',
-                    controller: _usernameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Username is required';
-                      }
-                      if (value.length > 100) {
-                        return "Username can't to be larger than 100 letter";
-                      }
-                      if (value.length < 4) {
-                        return "Username can't to be less than 4 letter";
-                      }
-                      return null;
-                    },
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  const SizedBox(height: 15),
-                  // Password Field.
-                  AuthField(
-                    // title: 'Password',
-                    hintText: 'Password',
-                    prefixIconData: Icons.lock,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      } else if (value.length < 5) {
-                        return 'Password should be at least 5 characters long';
-                      }
-                      return null;
-                    },
-                    isPassword: true,
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.done,
-                  ),
-                  const SizedBox(height: 15),
-                  //password confirmed
-                  AuthField(
-                    // title: 'confirmation Password',
-                    hintText: 'Confim Password',
-                    prefixIconData: Icons.lock,
-                    controller: _confpasswordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      } else if (_passwordController.text !=
-                          _confpasswordController.text) {
-                        return "Passwords don't match";
-                      }
-                      return null;
-                    },
-                    isPassword: true,
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.done,
-                  ),
+                    AuthField(
+                      // title: 'Username',
+                      prefixIconData: Icons.person,
+                      hintText: 'Username',
+                      controller: _usernameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Username is required';
+                        }
+                        if (value.length > 100) {
+                          return "Username can't to be larger than 100 letter";
+                        }
+                        if (value.length < 4) {
+                          return "Username can't to be less than 4 letter";
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 15),
+                    // Password Field.
+                    AuthField(
+                      // title: 'Password',
+                      hintText: 'Password',
+                      prefixIconData: Icons.lock,
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        } else if (value.length < 5) {
+                          return 'Password should be at least 5 characters long';
+                        }
+                        return null;
+                      },
+                      isPassword: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(height: 15),
+                    //password confirmed
+                    AuthField(
+                      // title: 'confirmation Password',
+                      hintText: 'Confim Password',
+                      prefixIconData: Icons.lock,
+                      controller: _confpasswordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        } else if (_passwordController.text !=
+                            _confpasswordController.text) {
+                          return "Passwords don't match";
+                        }
+                        return null;
+                      },
+                      isPassword: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                    ),
 
-                  const SizedBox(height: 15),
-                  //Login button
-                  PrimaryButton(
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        _register(context);
-                        _usernameController.clear();
-                        _confpasswordController.clear();
-                        _passwordController.clear();
-                      }
-                    },
-                    text: 'SIGN UP',
-                  ),
+                    const SizedBox(height: 15),
+                    //Login button
+                    PrimaryButton(
+                      onTap: () {
+                        if (formKey.currentState!.validate()) {
+                          _register(context);
+                          _usernameController.clear();
+                          _confpasswordController.clear();
+                          _passwordController.clear();
+                        }
+                      },
+                      text: 'SIGN UP',
+                    ),
 
-                  //Sign up button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Already have an account?"),
-                      TextButton(
-                          onPressed: () {
-                            //Navigate to sign up
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
-                          },
-                          child: const Text(
-                            "Login",
-                            style: TextStyle(color: AppColors.kPrimary),
-                          ))
-                    ],
-                  )
-                ],
+                    //Sign up button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Already have an account?"),
+                        TextButton(
+                            onPressed: () {
+                              //Navigate to sign up
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const LoginScreen()));
+                            },
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(color: AppColors.kPrimary),
+                            ))
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

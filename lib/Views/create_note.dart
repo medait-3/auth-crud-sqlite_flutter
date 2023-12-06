@@ -3,10 +3,12 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/notes.dart';
 
+import '../JsonModels/users.dart';
 import '../_constant/button.dart';
 
 class CreateNote extends StatefulWidget {
-  const CreateNote({super.key});
+  final Users? usr;
+  const CreateNote({super.key,this.usr});
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -25,7 +27,7 @@ class _CreateNoteState extends State<CreateNote> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
                 if (formKey.currentState != null) {
                   Navigator.push(context,
@@ -76,6 +78,7 @@ class _CreateNoteState extends State<CreateNote> {
                             noteTitle: title.text,
                             noteContent: content.text,
                             createdAt: DateTime.now().toIso8601String(),
+                            userId: widget.usr!.usrId??0
                           ),
                         );
                         Navigator.push(
