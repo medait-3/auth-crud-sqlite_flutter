@@ -79,10 +79,6 @@ class _NotesState extends State<Notes> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              //We need call refresh method after a new note is created
-              //Now it works properly
-              //We will do delete now
-
               Navigator.push(
                   context,
                   MaterialPageRoute(
