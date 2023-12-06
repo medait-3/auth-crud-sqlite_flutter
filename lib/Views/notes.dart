@@ -69,7 +69,7 @@ class _NotesState extends State<Notes> {
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
-                icon: Icon(Icons.logout))
+                icon: const Icon(Icons.logout))
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -78,7 +78,6 @@ class _NotesState extends State<Notes> {
                     MaterialPageRoute(builder: (context) => const CreateNote()))
                 .then((value) {
               if (value) {
-                //This will be called
                 _refresh();
               }
             });
