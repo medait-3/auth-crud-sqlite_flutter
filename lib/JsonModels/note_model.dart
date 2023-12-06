@@ -7,6 +7,7 @@ class NoteModel {
 
   NoteModel({
     this.noteId,
+    this.userId,
     required this.noteTitle,
     required this.noteContent,
     required this.createdAt,

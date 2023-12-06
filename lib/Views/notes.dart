@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/JsonModels/users.dart';
-
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/create_note.dart';
+
 import '../Authtentication/login.dart';
 import '../_constant/alertdialog.dart';
 
 class Notes extends StatefulWidget {
-  final Users? usr;
   const Notes({
-    this.usr,
     super.key,
   });
 
@@ -31,7 +29,7 @@ class _NotesState extends State<Notes> {
   @override
   void initState() {
     handler = DatabaseHelper();
-    notes = handler.getNotes(widget.usr!.usrId??0);
+    notes = handler.getNotes();
 
     handler.initDB().whenComplete(() {
       notes = getAllNotes();
@@ -40,7 +38,7 @@ class _NotesState extends State<Notes> {
   }
 
   Future<List<NoteModel>> getAllNotes() {
-    return handler.getNotes(widget.usr!.usrId??0);
+    return handler.getNotes();
   }
 
   //Search method here
@@ -68,21 +66,25 @@ class _NotesState extends State<Notes> {
               IconButton(
                   onPressed: () async {
                     await handler.closeDatabase();
-                    if(!mounted)return;
+
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  icon: const Icon(Icons.logout))
+                  icon: Icon(Icons.logout))
             ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
+              //We need call refresh method after a new note is created
+              //Now it works properly
+              //We will do delete now
+
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateNote(usr: widget.usr))).then((value) {
+                      builder: (context) => const CreateNote())).then((value) {
                 if (value) {
                   //This will be called
                   _refresh();

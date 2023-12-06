@@ -4,28 +4,12 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/JsonModels/users.dart';
 
 class DatabaseHelper {
-  final databaseName = "noteDB.db";
+  final databaseName = "notessS.db";
   String noteTable =
-  ''' CREATE TABLE IF NOT EXISTS  notes (
-  noteId INTEGER PRIMARY KEY AUTOINCREMENT, 
-  noteTitle TEXT NOT NULL, 
-  noteContent TEXT NOT NULL, 
-  createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-  user_id INTEGER, 
-  FOREIGN KEY(user_id) REFERENCES users(usrId)
-  )
-  '''
-  ;
+      "CREATE TABLE IF NOT EXISTS  notes (noteId INTEGER PRIMARY KEY AUTOINCREMENT, noteTitle TEXT NOT NULL, noteContent TEXT NOT NULL, createdAt TEXT DEFAULT CURRENT_TIMESTAMP,user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(usrId))";
 
   String users =
-      '''
-      create table IF NOT EXISTS  users (
-      usrId INTEGER PRIMARY KEY AUTOINCREMENT, 
-      usrName TEXT UNIQUE, 
-      usrPassword TEXT
-      )
-      '''
-      ;
+      "create table IF NOT EXISTS  users (usrId INTEGER PRIMARY KEY AUTOINCREMENT, usrName TEXT UNIQUE, usrPassword TEXT)";
 
   //We are done in this section
 
@@ -58,14 +42,6 @@ class DatabaseHelper {
     return db.insert('users', user.toMap());
   }
 
-
-  //Get current user
-  Future <Users?> getCurrentUser(String username)async{
-    final Database db = await initDB();
-    var res = await db.query("users",where: "usrName = ?",whereArgs: [username]);
-    return res.isNotEmpty? Users.fromMap(res.first): null;
-  }
-
 //exist user
   Future<bool> doesUserExist(String usrName) async {
     final Database db = await initDB();
@@ -96,13 +72,21 @@ class DatabaseHelper {
   //Create Note
   Future<int> createNote(NoteModel note) async {
     final Database db = await initDB();
-    return db.insert("notes", note.toMap());
+    return db.insert('notes', {
+      'user_id': note.userId,
+      'title': note.noteTitle,
+      'content': note.noteContent,
+    });
   }
 
-  //Get notes created by specific user
-  Future<List<NoteModel>> getNotes(int usrId) async {
+  //Get notes
+  Future<List<NoteModel>> getNotes() async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.rawQuery("select usrId, noteTitle, noteContent,createdAt from notes as note INNER JOIN users as usr ON note.user_id = usr.usrId where usrId = ?  ",[usrId]);
+    List<Map<String, Object?>> result = await db.query(
+      'notes',
+      // where: 'user_id = ?',
+      // whereArgs: [userId],
+    );
     return result.map((e) => NoteModel.fromMap(e)).toList();
   }
 
