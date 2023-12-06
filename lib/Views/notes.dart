@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz/JsonModels/note_model.dart';
+import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/create_note.dart';
 
@@ -8,8 +9,10 @@ import '../Authtentication/login.dart';
 import '../_constant/alertdialog.dart';
 
 class Notes extends StatefulWidget {
+  final Users? usr;
   const Notes({
     super.key,
+    this.usr
   });
 
   @override
@@ -28,7 +31,7 @@ class _NotesState extends State<Notes> {
   @override
   void initState() {
     handler = DatabaseHelper();
-    notes = handler.getNotes();
+    notes = handler.getNotes(widget.usr!.usrId);
 
     handler.initDB().whenComplete(() {
       notes = getAllNotes();
@@ -37,7 +40,7 @@ class _NotesState extends State<Notes> {
   }
 
   Future<List<NoteModel>> getAllNotes() {
-    return handler.getNotes();
+    return handler.getNotes(widget.usr!.usrId);
   }
 
   //Search method here
@@ -64,9 +67,10 @@ class _NotesState extends State<Notes> {
                 onPressed: () async {
                   await handler.closeDatabase();
 
+                  if(!mounted)return;
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
                 icon: const Icon(Icons.logout))

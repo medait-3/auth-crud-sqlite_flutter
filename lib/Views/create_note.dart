@@ -3,7 +3,6 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/notes.dart';
-import '../JsonModels/users.dart';
 import '../_constant/button.dart';
 
 class CreateNote extends StatefulWidget {

@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //Now we should call this function in login button
   login() async {
-    Users? usr = await db.getCurrentUser(username.text);
+    Users? usr = await db.getUser(username.text);
     var response = await db
         .login(Users(usrName: username.text, usrPassword: password.text));
     if (response == true) {
@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       //If login is correct, then goto notes
       if (!mounted) return;
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Notes()));
+          context, MaterialPageRoute(builder: (context) => Notes(usr: usr)));
     } else {
       //If not, true the bool value to show error message
       setState(() {
