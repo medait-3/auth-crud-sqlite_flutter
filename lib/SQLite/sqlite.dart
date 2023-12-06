@@ -72,7 +72,6 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-//log out
   Future<void> closeDatabase() async {
     final Database db = await initDB();
     db.close();
@@ -97,7 +96,7 @@ class DatabaseHelper {
   //Get notes
   Future<List<NoteModel>> getNotes(int? usrId) async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.query("users",where: "user_id = ?",whereArgs: [usrId]);
+    List<Map<String, Object?>> result = await db.query("notes",where: "user_id = ?",whereArgs: [usrId]);
     return result.map((e) => NoteModel.fromMap(e)).toList();
   }
 
