@@ -17,7 +17,6 @@ class _CreateNoteState extends State<CreateNote> {
   final title = TextEditingController();
   final content = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
   final db = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
