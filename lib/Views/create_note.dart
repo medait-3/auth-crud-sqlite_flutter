@@ -32,7 +32,7 @@ class _CreateNoteState extends State<CreateNote> {
                       MaterialPageRoute(builder: (context) => const Notes()));
                 }
               }),
-          title: const Text("Create note"),
+          title: Text("Create note, ${widget.usr!.usrName}"),
         ),
         body: Form(
             //I forgot to specify key
@@ -58,12 +58,12 @@ class _CreateNoteState extends State<CreateNote> {
                     controller: content,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "password is required";
+                        return "Content is required";
                       }
                       return null;
                     },
                     decoration: const InputDecoration(
-                      label: Text("password"),
+                      label: Text("Content"),
                       border: InputBorder.none,
                     ),
                   ),
@@ -78,11 +78,7 @@ class _CreateNoteState extends State<CreateNote> {
                             createdAt: DateTime.now().toIso8601String(),
                             userId: widget.usr!.usrId??0
                           ),
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Notes()));
+                        ).whenComplete(() => Navigator.of(context).pop(true));
                       }
                     },
                     text: 'create',

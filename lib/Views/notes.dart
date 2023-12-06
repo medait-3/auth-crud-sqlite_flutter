@@ -61,7 +61,7 @@ class _NotesState extends State<Notes> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text("My Notes"),
+          title: Text("Welcome, ${widget.usr!.usrName}"),
           actions: [
             IconButton(
                 onPressed: () async {
@@ -71,7 +71,11 @@ class _NotesState extends State<Notes> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
+                  ).then((value) {
+                     if(value){
+                       _refresh();
+                     }
+                  });
                 },
                 icon: const Icon(Icons.logout))
           ],
@@ -79,7 +83,7 @@ class _NotesState extends State<Notes> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const CreateNote()))
+                    MaterialPageRoute(builder: (context) => CreateNote(usr: widget.usr)))
                 .then((value) {
               if (value) {
                 _refresh();

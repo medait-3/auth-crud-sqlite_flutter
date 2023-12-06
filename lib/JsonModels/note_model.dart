@@ -18,7 +18,7 @@ class NoteModel {
         noteTitle: json["noteTitle"],
         noteContent: json["noteContent"],
         createdAt: json["createdAt"],
-        userId: json["usrId"],
+        userId: json["user_id"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -26,6 +26,6 @@ class NoteModel {
         "noteTitle": noteTitle,
         "noteContent": noteContent,
         "createdAt": createdAt,
-        "usrId":userId,
+        "user_id":userId,
       };
 }

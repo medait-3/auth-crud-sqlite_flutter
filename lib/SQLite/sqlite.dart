@@ -4,7 +4,7 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/JsonModels/users.dart';
 
 class DatabaseHelper {
-  final databaseName = "note.db";
+  final databaseName = "noteApp.db";
   String noteTable =
   '''
   CREATE TABLE IF NOT EXISTS  notes (
@@ -18,12 +18,12 @@ class DatabaseHelper {
   ;
 
   String users =
-      '''
-      create table IF NOT EXISTS  users (
-      usrId INTEGER PRIMARY KEY AUTOINCREMENT, 
-      usrName TEXT UNIQUE, 
-      usrPassword TEXT
-      ''';
+  '''
+  create table IF NOT EXISTS  users (
+  usrId INTEGER PRIMARY KEY AUTOINCREMENT, 
+  usrName TEXT UNIQUE, 
+  usrPassword TEXT)
+  ''';
 
   Future<Database> initDB() async {
     final databasePath = await getDatabasesPath();
@@ -45,7 +45,6 @@ class DatabaseHelper {
   //Login Method
   Future<bool> login(Users user) async {
     final Database db = await initDB();
-    // I forgot the password to check
     var result = await db.rawQuery(
         "select * from users where usrName = '${user.usrName}' AND usrPassword = '${user.usrPassword}'");
     if (result.isNotEmpty) {
@@ -72,10 +71,7 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-  Future<void> closeDatabase() async {
-    final Database db = await initDB();
-    db.close();
-  }
+
 
   //Search Method
   Future<List<NoteModel>> searchNotes(String keyword) async {
@@ -112,5 +108,10 @@ class DatabaseHelper {
     return db.rawUpdate(
         'update notes set noteTitle = ?, noteContent = ? where noteId = ?',
         [title, content, noteId]);
+  }
+
+  Future<void> closeDatabase() async {
+    final Database db = await initDB();
+    db.close();
   }
 }

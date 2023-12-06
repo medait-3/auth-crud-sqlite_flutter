@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     var response = await db
         .login(Users(usrName: username.text, usrPassword: password.text));
     if (response == true) {
+      print("res : $response");
       print("------------------------{$username}");
       //If login is correct, then goto notes
       if (!mounted) return;
@@ -121,8 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         if (formKey.currentState!.validate()) {
                           login();
-                          password.clear();
-                          username.clear();
                         }
                       },
                       text: 'LOGIN',
