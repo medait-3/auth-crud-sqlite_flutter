@@ -4,7 +4,6 @@ import 'package:quiz/JsonModels/note_model.dart';
 import 'package:quiz/JsonModels/users.dart';
 import 'package:quiz/SQLite/sqlite.dart';
 import 'package:quiz/Views/create_note.dart';
-
 import '../Authtentication/login.dart';
 import '../_constant/alertdialog.dart';
 
