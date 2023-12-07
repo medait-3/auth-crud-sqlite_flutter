@@ -5,6 +5,7 @@ import 'package:quiz/Authtentication/login.dart';
 import '_constant/color.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.dark,
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.kPrimary),
         useMaterial3: true,
-        pageTransitionsTheme: PageTransitionsTheme(builders: {
+        pageTransitionsTheme: const PageTransitionsTheme(builders: {
           TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
           TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
         }),
