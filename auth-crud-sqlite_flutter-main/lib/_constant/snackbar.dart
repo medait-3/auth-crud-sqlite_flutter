@@ -10,7 +10,7 @@ class CustomSnackBar {
     final snackBar = SnackBar(
       content: Text(
         message,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
       backgroundColor: backgroundColor,
       duration: duration,

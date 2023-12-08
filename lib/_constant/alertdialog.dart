@@ -28,7 +28,7 @@ class CustomAlertDialog extends StatelessWidget {
           onPressed: onNo,
           child: Text(
             noButtonText,
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           ),
         ),
         TextButton(

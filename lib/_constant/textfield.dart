@@ -59,17 +59,17 @@ class _AuthFieldState extends State<AuthField> {
                 const Color(0xFF78828A), // Change the cursor color here
 
             decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(20.0),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
                 ),
                 borderSide: BorderSide(
                   color: Color(0xFFF6F6F6),
                 ),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(20.0),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
                 ),
                 borderSide: BorderSide(
                   color: Color(0xFFF6F6F6),
