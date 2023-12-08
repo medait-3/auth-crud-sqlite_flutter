@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
         context,
         message: 'Username already existe',
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       );
     } else {
       final db = DatabaseHelper();
@@ -52,7 +52,7 @@ class _SignUpState extends State<SignUp> {
         context,
         message: 'Registration successful',
         backgroundColor: Colors.green,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       );
     }
   }
